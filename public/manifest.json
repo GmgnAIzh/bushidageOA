@@ -1,0 +1,61 @@
+{
+  "name": "BushidageOA - 企业智慧办公自动化系统",
+  "short_name": "BushidageOA",
+  "description": "全功能企业办公自动化平台，包含员工管理、项目管理、财务管理、实时聊天、日程安排、文档协作等功能",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 72'><rect width='72' height='72' fill='%23000'/><text x='36' y='36' text-anchor='middle' dominant-baseline='central' fill='white' font-size='20'>OA</text></svg>",
+      "sizes": "72x72",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23000'/><text x='96' y='96' text-anchor='middle' dominant-baseline='central' fill='white' font-size='50'>OA</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23000'/><text x='256' y='256' text-anchor='middle' dominant-baseline='central' fill='white' font-size='150'>OA</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard overview on desktop"
+    },
+    {
+      "src": "/screenshots/mobile-1.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile dashboard view"
+    }
+  ],
+  "features": [
+    "Employee Management",
+    "Project Tracking",
+    "Financial Management",
+    "Real-time Chat",
+    "Calendar Scheduling",
+    "Document Collaboration",
+    "Approval Workflows",
+    "Reporting & Analytics"
+  ],
+  "prefer_related_applications": false,
+  "lang": "zh-CN",
+  "dir": "ltr"
+}
