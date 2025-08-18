@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>离线模式 - BushidageOA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .message {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .features {
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .features h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .features ul {
+            list-style: none;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .features li {
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .features li:before {
+            content: "✓";
+            margin-right: 10px;
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .status {
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">OA</div>
+        <h1>BushidageOA</h1>
+        <p class="subtitle">企业智慧办公自动化系统</p>
+
+        <div class="icon pulse">📡</div>
+
+        <p class="message">网络连接不可用</p>
+
+        <div class="features">
+            <h3>离线功能仍然可用：</h3>
+            <ul>
+                <li>查看已缓存的数据</li>
+                <li>编辑文档（稍后同步）</li>
+                <li>浏览离线内容</li>
+                <li>查看历史记录</li>
+            </ul>
+        </div>
+
+        <button class="button" onclick="retryConnection()">重新连接</button>
+
+        <div class="status">
+            <span id="status">正在检查网络状态...</span>
+        </div>
+    </div>
+
+    <script>
+        // 检查网络状态
+        function checkNetworkStatus() {
+            const status = document.getElementById('status');
+
+            if (navigator.onLine) {
+                status.textContent = '网络已连接，正在重新加载...';
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            } else {
+                status.textContent = '网络仍未连接，请检查网络设置';
+            }
+        }
+
+        // 重试连接
+        function retryConnection() {
+            const status = document.getElementById('status');
+            status.textContent = '正在检查网络连接...';
+
+            // 尝试加载主页
+            fetch('/', { method: 'HEAD', cache: 'no-cache' })
+                .then(() => {
+                    status.textContent = '连接成功，正在跳转...';
+                    window.location.href = '/';
+                })
+                .catch(() => {
+                    status.textContent = '连接失败，请稍后重试';
+                });
+        }
+
+        // 监听网络状态变化
+        window.addEventListener('online', () => {
+            checkNetworkStatus();
+        });
+
+        window.addEventListener('offline', () => {
+            document.getElementById('status').textContent = '网络连接已断开';
+        });
+
+        // 初始检查
+        setTimeout(checkNetworkStatus, 1000);
+
+        // 定期检查网络状态
+        setInterval(() => {
+            if (!navigator.onLine) {
+                fetch('/', { method: 'HEAD', cache: 'no-cache' })
+                    .then(() => {
+                        if (!navigator.onLine) {
+                            // 网络实际可用但navigator.onLine显示离线
+                            window.location.href = '/';
+                        }
+                    })
+                    .catch(() => {
+                        // 确实离线
+                    });
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
