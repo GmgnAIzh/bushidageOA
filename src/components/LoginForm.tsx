@@ -4,215 +4,114 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-import { AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Eye, EyeOff, Loader2, Terminal } from "lucide-react"
 
 interface LoginFormProps {
-  onLogin: (username: string, password: string) => void
+  onLogin: (username: string, password: string) => void;
+  isLoading: boolean;
 }
 
-export function LoginForm({ onLogin }: LoginFormProps) {
+export function LoginForm({ onLogin, isLoading }: LoginFormProps) {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [rememberMe, setRememberMe] = useState(false)
-  const [error, setError] = useState("")
-  const [loginAttempts, setLoginAttempts] = useState(0)
+  const [rememberMe, setRememberMe] = useState(true)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (!username.trim() || !password.trim()) {
-      setError("请输入用户名和密码")
-      return
-    }
-
-    if (loginAttempts >= 3) {
-      setError("登录失败次数过多，请稍后再试")
-      return
-    }
-
-    setIsLoading(true)
-    setError("")
-
-    try {
-      // 模拟登录延迟
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // 验证登录
-      if ((username === "admin" && password === "123456") ||
-          (username === "user" && password === "123456")) {
-
-        // 保存登录状态
-        if (rememberMe) {
-          localStorage.setItem("rememberLogin", "true")
-          localStorage.setItem("lastUsername", username)
-        }
-
-        onLogin(username, password)
-      } else {
-        setLoginAttempts(prev => prev + 1)
-        setError("用户名或密码错误")
-      }
-    } catch (error) {
-      setError("登录失败，请检查网络连接")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleForgotPassword = () => {
-    alert("请联系系统管理员重置密码")
-  }
-
-  const handleQuickLogin = (type: "admin" | "user") => {
-    if (type === "admin") {
-      setUsername("admin")
-      setPassword("123456")
-    } else {
-      setUsername("user")
-      setPassword("123456")
-    }
+    onLogin(username, password)
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-zinc-50 px-4">
-      <Card className="w-full max-w-md shadow-xl border-0">
-        <CardHeader className="space-y-1 text-center pb-6">
-          <div className="mx-auto w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center mb-4">
-            <span className="text-2xl font-bold text-white">OA</span>
-          </div>
-          <CardTitle className="text-2xl font-bold text-zinc-900">智慧OA系统</CardTitle>
-          <CardDescription className="text-zinc-600">
-            欢迎使用企业办公自动化系统
-          </CardDescription>
-        </CardHeader>
+    <Card className="w-full max-w-md bg-terminus-bg-secondary border-terminus-border shadow-2xl shadow-terminus-accent/10">
+      <CardHeader className="text-center">
+        <div className="mx-auto mb-4">
+          <Terminal size={48} className="text-terminus-accent" />
+        </div>
+        <CardTitle className="text-2xl font-bold text-terminus-accent tracking-widest">
+          BUSHIDAGE//OA
+        </CardTitle>
+      </CardHeader>
 
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
-            <div className="space-y-2">
-              <Label htmlFor="username">用户名</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="请输入用户名"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className="h-11"
-                disabled={isLoading}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">密码</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="请输入密码"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="h-11 pr-10"
-                  disabled={isLoading}
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={isLoading}
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="remember"
-                checked={rememberMe}
-                onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                disabled={isLoading}
-              />
-              <Label htmlFor="remember" className="text-sm font-normal">
-                记住登录状态
-              </Label>
-            </div>
-          </CardContent>
-
-          <CardFooter className="flex flex-col space-y-4">
-            <Button
-              type="submit"
-              className="w-full h-11 bg-zinc-900 hover:bg-zinc-800"
+      <form onSubmit={handleSubmit}>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="username">USER_ID</Label>
+            <Input
+              id="username"
+              type="text"
+              placeholder="[Enter your designation]"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="bg-terminus-bg-primary border-terminus-border focus:ring-terminus-accent h-12"
               disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  登录中...
-                </>
-              ) : (
-                "登录"
-              )}
-            </Button>
+            />
+          </div>
 
-            <div className="flex space-x-2 w-full">
+          <div className="space-y-2">
+            <Label htmlFor="password">ACCESS_KEY</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="[Enter your secret key]"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="bg-terminus-bg-primary border-terminus-border focus:ring-terminus-accent h-12 pr-10"
+                disabled={isLoading}
+              />
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                className="flex-1"
-                onClick={() => handleQuickLogin("admin")}
+                className="absolute right-0 top-0 h-full px-3 py-2 text-terminus-text-primary/50 hover:text-terminus-accent"
+                onClick={() => setShowPassword(!showPassword)}
                 disabled={isLoading}
               >
-                管理员登录
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="flex-1"
-                onClick={() => handleQuickLogin("user")}
-                disabled={isLoading}
-              >
-                普通用户登录
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </Button>
             </div>
+          </div>
 
-            <div className="text-center space-y-2">
-              <Button
-                type="button"
-                variant="link"
-                size="sm"
-                onClick={handleForgotPassword}
-                disabled={isLoading}
-                className="text-sm text-zinc-600 hover:text-zinc-900"
-              >
-                忘记密码？
-              </Button>
+          <div className="flex items-center space-x-3">
+            <Checkbox
+              id="remember"
+              checked={rememberMe}
+              onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+              disabled={isLoading}
+              className="border-terminus-accent data-[state=checked]:bg-terminus-accent data-[state=checked]:text-terminus-bg-primary"
+            />
+            <Label htmlFor="remember" className="text-sm font-normal text-terminus-text-primary/80">
+              // Keep session active
+            </Label>
+          </div>
+        </CardContent>
 
-              <div className="text-xs text-zinc-500 space-y-1">
-                <p>演示账号：</p>
-                <p>管理员: admin / 123456</p>
-                <p>普通用户: user / 123456</p>
-              </div>
-            </div>
-          </CardFooter>
-        </form>
-      </Card>
-    </div>
+        <CardFooter className="flex flex-col space-y-4">
+          <Button
+            type="submit"
+            className="w-full h-12 bg-terminus-accent text-terminus-bg-primary font-bold text-base hover:bg-terminus-accent/90 transition-all duration-300 hover:shadow-lg hover:shadow-terminus-accent/20"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                AUTHENTICATING...
+              </>
+            ) : (
+              "INITIATE_CONNECTION"
+            )}
+          </Button>
+          <div className="text-center text-xs text-terminus-text-primary/40 pt-4">
+            <p>// Unauthorized access is strictly prohibited.</p>
+            <p>// All activities are monitored and logged.</p>
+          </div>
+        </CardFooter>
+      </form>
+    </Card>
   )
 }
