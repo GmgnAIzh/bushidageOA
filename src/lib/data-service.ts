@@ -33,7 +33,11 @@ class DataService {
       'oa_chats',
       'oa_chat_messages',
       'oa_departments',
-      'oa_transactions'
+      'oa_transactions',
+      'oa_projects',
+      'oa_tasks',
+      'oa_time_entries',
+      'oa_resources'
     ]
 
     storageKeys.forEach(key => {
@@ -83,6 +87,24 @@ class DataService {
           budget: '₮ 65,000',
           description: '负责产品技术开发和维护'
         }
+      ],
+      'oa_projects': [
+        { id: 'proj-1', name: 'Quantum Core Stabilizer', description: 'Develop a new quantum core stabilization matrix.', status: 'active', progress: 65, projectManager: 'Dr. Evelyn Reed', budget: 150000, actualCost: 89000 },
+        { id: 'proj-2', name: 'Neural Interface v2.0', description: 'Upgrade the existing neural interface for higher bandwidth.', status: 'planning', progress: 15, projectManager: 'Cmdr. Jax', budget: 200000, actualCost: 25000 },
+        { id: 'proj-3', name: 'A.G.I.S. Deployment', description: 'Deploy the Autonomous Global Intelligence System.', status: 'completed', progress: 100, projectManager: 'Unit 734', budget: 180000, actualCost: 175000 },
+      ],
+      'oa_tasks': [
+        { id: 'task-1', projectId: 'proj-1', title: 'Design Quantum Resonator', status: 'completed', assignee: 'Dr. Evelyn Reed', priority: 'high' },
+        { id: 'task-2', projectId: 'proj-1', title: 'Calibrate Stabilization Matrix', status: 'active', assignee: 'Dr. Evelyn Reed', priority: 'high' },
+        { id: 'task-3', projectId: 'proj-2', title: 'Develop Bio-feedback Sensors', status: 'planning', assignee: 'Cmdr. Jax', priority: 'medium' },
+      ],
+      'oa_time_entries': [
+          { id: 'time-1', taskId: 'task-1', projectId: 'proj-1', employeeId: 'emp-1', date: '2025-08-18', hours: 8, description: 'Initial resonator design schematics.'},
+          { id: 'time-2', taskId: 'task-2', projectId: 'proj-1', employeeId: 'emp-1', date: '2025-08-19', hours: 4, description: 'First pass calibration.'},
+      ],
+      'oa_resources': [
+          { id: 'res-1', employeeId: 'emp-1', name: 'Dr. Evelyn Reed', allocation: 80 },
+          { id: 'res-2', employeeId: 'emp-2', name: 'Cmdr. Jax', allocation: 60 },
       ],
       'oa_announcements': [
         {
@@ -255,7 +277,122 @@ class DataService {
     return departments ? JSON.parse(departments) : []
   }
 
+  // 项目管理
+  getProjects(): any[] {
+    if (typeof window === 'undefined') return []
+    const projects = localStorage.getItem('oa_projects')
+    return projects ? JSON.parse(projects) : []
+  }
+
+  addProject(project: any): any {
+    const newProject = {
+      id: this.generateId(),
+      ...project,
+      createdAt: this.getCurrentDateTime()
+    }
+    const projects = this.getProjects()
+    projects.unshift(newProject)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('oa_projects', JSON.stringify(projects))
+    }
+    return newProject
+  }
+
+  // 任务管理
+  getTasks(): any[] {
+    if (typeof window === 'undefined') return []
+    const tasks = localStorage.getItem('oa_tasks')
+    return tasks ? JSON.parse(tasks) : []
+  }
+
+  getTasksByProjectId(projectId: string): any[] {
+    const allTasks = this.getTasks();
+    return allTasks.filter(task => task.projectId === projectId);
+  }
+
+  addTask(task: any): any {
+    const newTask = {
+      id: this.generateId(),
+      ...task,
+      createdAt: this.getCurrentDateTime()
+    }
+    const tasks = this.getTasks()
+    tasks.unshift(newTask)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('oa_tasks', JSON.stringify(tasks))
+    }
+    return newTask
+  }
+
+  updateTask(taskId: string, updates: any): any {
+    const tasks = this.getTasks()
+    const index = tasks.findIndex(t => t.id === taskId)
+    if (index !== -1) {
+      tasks[index] = { ...tasks[index], ...updates }
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('oa_tasks', JSON.stringify(tasks))
+      }
+      return tasks[index]
+    }
+    return null
+  }
+
+  deleteTask(taskId: string): boolean {
+    let tasks = this.getTasks()
+    const initialLength = tasks.length
+    tasks = tasks.filter(t => t.id !== taskId)
+    if (tasks.length < initialLength) {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('oa_tasks', JSON.stringify(tasks))
+        }
+        return true
+    }
+    return false
+  }
+
   // 支付申请管理
+
+  // 时间条目管理
+  getTimeEntries(): any[] {
+    if (typeof window === 'undefined') return []
+    const entries = localStorage.getItem('oa_time_entries')
+    return entries ? JSON.parse(entries) : []
+  }
+
+  addTimeEntry(entry: any): any {
+    const newEntry = {
+      id: this.generateId(),
+      ...entry,
+      createdAt: this.getCurrentDateTime()
+    }
+    const entries = this.getTimeEntries()
+    entries.unshift(newEntry)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('oa_time_entries', JSON.stringify(entries))
+    }
+    return newEntry
+  }
+
+  // 资源管理
+  getResources(): any[] {
+      if (typeof window === 'undefined') return []
+      const resources = localStorage.getItem('oa_resources')
+      return resources ? JSON.parse(resources) : []
+  }
+
+  updateResourceAllocation(resourceId: string, updates: any): any {
+      const resources = this.getResources()
+      const index = resources.findIndex(r => r.id === resourceId)
+      if (index !== -1) {
+        resources[index] = { ...resources[index], ...updates }
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('oa_resources', JSON.stringify(resources))
+        }
+        return resources[index]
+      }
+      return null
+  }
+
   getPaymentRequests(): any[] {
     if (typeof window === 'undefined') return []
     const requests = localStorage.getItem('oa_payment_requests')
