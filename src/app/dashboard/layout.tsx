@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  Home, MessageSquare, FolderOpen, DollarSign, Users, FileCheck, BarChart3, Settings, LogOut, Terminal, ChevronLeft, ChevronRight
+  Home, MessageSquare, FolderOpen, DollarSign, Users, FileCheck, BarChart3, Settings, LogOut, Terminal, ChevronLeft, ChevronRight, Send
 } from "lucide-react";
 import { useRouter } from 'next/navigation';
 
@@ -17,6 +17,7 @@ const modules = [
   { id: 'hr', name: 'HR', icon: Users },
   { id: 'approvals', name: 'Approvals', icon: FileCheck },
   { id: 'reports', name: 'Reports', icon: BarChart3 },
+  { id: 'telegram', name: 'Telegram', icon: Send },
   { id: 'settings', name: 'Settings', icon: Settings },
 ];
 
